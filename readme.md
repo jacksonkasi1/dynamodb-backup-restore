@@ -38,6 +38,9 @@ This API provides functionality for taking bulk backups of DynamoDB tables and r
 ## Documentation
 For detailed API documentation and example requests, refer to the [Postman documentation](https://documenter.getpostman.com/view/24023893/2s93sabDiU).
 
+## Blog
+For more insights and discussions related to restoring DynamoDB table backups using an API endpoint, check out our blog post on https://jacksonkasi1.hashnode.dev/restoring-dynamodb-table-backup-using-an-api-endpoint.
+
 ## Issues
 If you encounter any issues or have suggestions for improvements, please submit them on the [GitHub Issues](https://github.com/jacksonkasi1/dynamodb-backup-restore/issues) page.
 
