@@ -264,7 +264,7 @@ app.post("/bucket/upload", async (req, res) => {
     try {
       await s3.headBucket(headBucketParams).promise();
     } catch (error) {
-      if (error.code === "NoSuchBucket") {
+      if (error.code === "NoSuchBucket" || "NotFound") {
         bucketExists = false;
       } else {
         throw error;
@@ -276,7 +276,7 @@ app.post("/bucket/upload", async (req, res) => {
       const createBucketParams = {
         Bucket: bucketName,
         CreateBucketConfiguration: {
-          LocationConstraint: AWS.config.region,
+          LocationConstraint: s3.config.region,
         },
       };
       await s3.createBucket(createBucketParams).promise();
@@ -286,7 +286,7 @@ app.post("/bucket/upload", async (req, res) => {
     const zipFile = fs.createReadStream(zipFilePath);
 
     // Extract the contents of the zip file and upload them to the S3 bucket
-    zipFile
+    await zipFile
       .pipe(unzipper.Parse())
       .on("entry", async (entry) => {
         const fileName = entry.path;
@@ -298,21 +298,16 @@ app.post("/bucket/upload", async (req, res) => {
         };
         await s3.upload(uploadParams).promise();
       })
-      .promise()
-      .then(() => {
-        res.status(200).send("Folder upload to S3 completed successfully");
-      })
-      .catch((error) => {
-        console.error("Error uploading folder to S3:", error);
-        res
-          .status(500)
-          .send("An error occurred while uploading the folder to S3");
-      });
+      .promise();
+
+    res.status(200).send("Folder upload to S3 completed successfully");
   } catch (error) {
     console.error("Error uploading folder to S3:", error);
     res.status(500).send("An error occurred while uploading the folder to S3");
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
